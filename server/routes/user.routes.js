@@ -1,6 +1,6 @@
 import express from 'express'
 import { deleteAccount, getUserProfile, getUserProfileById, updateProfile} from '../controllers/user.controllers.js'
-import { protectRoute } from '../middlewares/Auth.middleware.js'
+import { protectRoute } from '../middlewares/auth.middleware.js'
 import upload from '../middlewares/multer.js'
 
 const router = express.Router()
