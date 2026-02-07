@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.get("/search", searchPosts)
 router.post('/create-post',protectRoute,upload.single("postImage") ,createPost)
-router.get('/all-posts',protectRoute,getAllPosts)
+router.get('/all-posts',getAllPosts)
 router.get('/my-posts',protectRoute,getMyPosts)
 router.post("/:id/apply", protectRoute,upload.single("resume"), applyForPost);
 router.put('/edit-post/:id',protectRoute,upload.single("postImage"),editPost)

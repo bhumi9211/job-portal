@@ -10,9 +10,6 @@ const BASE_URL = import.meta.env.VITE_BACKEND_URL;
   autoConnect: false,
 });
 
-
-
-
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
