@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 const PostCard = ({ post }) => {
+  console.log(post)
   if (!post) return null;
 
   const formatDate = (dateString) => {
@@ -10,6 +11,7 @@ const PostCard = ({ post }) => {
       year: "numeric",
     });
   };
+
   
 
   return (
@@ -41,7 +43,7 @@ const PostCard = ({ post }) => {
         </div>
 
         <div className="mt-4 space-y-2 text-sm text-gray-300">
-          <p><span className="text-white">Posted By:</span> {post.postedBy.fullName}</p>
+          <p><span className="text-white">Posted By:</span> {post.postedBy?.fullName}</p>
           <p><span className="text-white">Apply By:</span> {formatDate(post.applyBy)}</p>
         </div>
 
