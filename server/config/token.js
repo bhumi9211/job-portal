@@ -6,7 +6,8 @@ export const generateToken = async (userId, res) => {
   });
   res.cookie("jwt", token, {
     httpOnly: true,
-    secure: false,
+    secure: true,
+    sameSite: "none"
   });
   // await User.findByIdAndUpdate(userId,{token})
   return token;
