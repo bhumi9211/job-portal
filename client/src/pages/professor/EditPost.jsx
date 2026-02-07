@@ -186,7 +186,7 @@ const EditPost = () => {
             </div>
 
             {/* Status */}
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-[#9DB2BF] mb-1">
                 Status
               </label>
@@ -199,7 +199,7 @@ const EditPost = () => {
                 <option value="open">Open</option>
                 <option value="closed">Closed</option>
               </select>
-            </div>
+            </div> */}
 
             {/* Skills */}
             <div className="md:col-span-2">
