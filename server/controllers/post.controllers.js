@@ -1,4 +1,4 @@
-import Post from "../models/Post.model.js";
+import Post from "../models/post.model.js";
 import mongoose from "mongoose";
 import Application from "../models/application.model.js";
 import uploadOnCloudinary from "../utils/uploadOnCloudinary.js";
