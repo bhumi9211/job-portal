@@ -1,22 +1,23 @@
-import {cloudinary} from '../index.js'
-import fs from "fs";
+import { cloudinary } from "../index.js";
 
-const uploadOnCloudinary = async (filePath) => {
-  try {
-    if (!filePath) return null;
+const uploadOnCloudinary = async (fileBuffer, fileName) => {
+  if (!fileBuffer) return null;
 
-    const uploadResult = await cloudinary.uploader.upload(filePath,
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
       {
-        resource_type: "raw",      // default safety
-        access_mode: "public",
-    });
+        resource_type: "auto", // detect automatically image/video/raw
+        public_id: fileName?.split(".")[0],
+        folder: "job-posts",
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result.secure_url);
+      }
+    );
 
-    fs.unlinkSync(filePath); // cleanup
-    return uploadResult.secure_url;
-  } catch (error) {
-    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-    throw error;
-  }
+    stream.end(fileBuffer); // send buffer to cloudinary
+  });
 };
 
 export default uploadOnCloudinary;

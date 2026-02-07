@@ -108,7 +108,7 @@ console.log("FILE:", req.file);
     let imageUrl;
 
     if (imageFile) {
-      imageUrl = await uploadOnCloudinary(imageFile.path);
+      imageUrl = await uploadOnCloudinary(imageFile.buffer, imageFile.originalname);
     }
 
     const newMessage = await Message.create({

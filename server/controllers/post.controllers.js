@@ -34,7 +34,7 @@ export const createPost = async (req, res) => {
 
     // ✅ CORRECT: upload.single → req.file
     if (req.file) {
-      postImage = await uploadOnCloudinary(req.file.path); 
+      postImage = await uploadOnCloudinary(req.file.buffer, req.file.originalname); 
     }
   
       const post = await Post.create({
@@ -165,7 +165,8 @@ export const editPost = async (req, res) => {
     // CASE 1: new file uploaded
     if (req.files?.postImage?.[0]) {
       finalImage = await uploadOnCloudinary(
-        req.files.postImage[0].path
+        req.files.postImage[0].buffer,
+       req.files.postImage[0].originalname
       );
     }
     
@@ -332,7 +333,7 @@ export const applyForPost = async (req, res) => {
       return res.status(400).json({ message: "Resume file required" });
     }
 
-    const resumeUrl = await uploadOnCloudinary(req.file.path, {
+    const resumeUrl = await uploadOnCloudinary(req.file.buffer, req.file.originalname, {
       folder: "resumes",
       resource_type: "raw",
       access_mode: "public",

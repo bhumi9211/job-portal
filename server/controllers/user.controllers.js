@@ -26,7 +26,7 @@ export const updateProfile = async (req, res) => {
     let profileImageUrl;
     if (req.file) {
       profileImageUrl = await uploadOnCloudinary(
-        req.file.path
+       req.file.buffer, req.file.originalname
       );
     
     }
