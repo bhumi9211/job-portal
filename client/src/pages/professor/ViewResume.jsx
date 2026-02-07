@@ -76,9 +76,9 @@ const ViewResume = () => {
         {/* PDF VIEWER */}
         <div className="h-[75vh] w-full overflow-hidden rounded-xl border border-[#9DB2BF]/20 bg-black">
           <iframe
-            src={`https://docs.google.com/gview?url=${encodeURIComponent(
+            src={
               application.resume
-            )}&embedded=true`}
+            }
             className="h-full w-full"
             title="Resume Preview"
           />
