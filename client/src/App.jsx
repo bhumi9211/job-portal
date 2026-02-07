@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import ProtectedRoute from "./routes/ProtectedRoute";
-import PublicRoute from "./routes/PublicRoute";
+import ProtectedRoute from "./routes/protectedRoute";
+import PublicRoute from "./routes/PublicRoute"
 import "./index.css";
 import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
