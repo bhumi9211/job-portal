@@ -63,7 +63,6 @@ const PostApplicants = () => {
       const res = await API.get(`/api/post/${id}/applicants`, {
         withCredentials: true,
       });
-      console.log(res.data)
       setApplicants(res.data);
     } catch (err) {
       toast.error(
