@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
- export const socket = io(BASE_URL, {
+export const socket = io(BASE_URL, {
   withCredentials: true,
   autoConnect: false,
 });
@@ -16,13 +16,10 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  /* 🔄 Load user from localStorage on app start */
   useEffect(() => {
     try {
       const savedUser = localStorage.getItem("user");
-      if (savedUser) {
-        setUser(JSON.parse(savedUser));
-      }
+      if (savedUser) setUser(JSON.parse(savedUser));
     } catch (e) {
       localStorage.removeItem("user");
     } finally {
@@ -30,32 +27,21 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  /* ✅ LOGIN */
   const login = async (formData) => {
-    const res = await API.post("/api/auth/login", formData, {
-      withCredentials: true,
-    });
-
+    const res = await API.post("/api/auth/login", formData); // ✅ credentials auto
     const userData = res.data.user;
     localStorage.setItem("user", JSON.stringify(userData));
     setUser(userData);
-
     toast.success("Welcome back 👋");
   };
 
-  /* ✅ SIGNUP */
   const signup = async (formData) => {
-    const res = await API.post("/api/auth/register", formData, {
-      withCredentials: true,
-    });
-
+    const res = await API.post("/api/auth/register", formData);
     const userData = res.data.user;
     localStorage.setItem("user", JSON.stringify(userData));
     setUser(userData);
-
     toast.success("Account created successfully 🎉");
   };
-
 
   const updateUser = (updatedFields) => {
     setUser((prev) => {
@@ -67,27 +53,19 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (!user) return;
-  
+
     socket.connect();
-  
-    socket.on("connect", () => {
-  
-      // 🔥 emit ONLY after connect
-      socket.emit("join", user.id);
-    });
-  
+    socket.on("connect", () => socket.emit("join", user.id));
+
     return () => {
       socket.off("connect");
       socket.disconnect();
     };
   }, [user]);
-  
-  
 
-  /* ✅ LOGOUT */
   const logout = async () => {
     try {
-      await API.post("/api/auth/logout", { withCredentials: true });
+      await API.post("/api/auth/logout"); // ✅ fixed
     } catch (err) {}
     finally {
       localStorage.removeItem("user");
