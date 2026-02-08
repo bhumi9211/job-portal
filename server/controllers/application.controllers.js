@@ -75,12 +75,16 @@ export const viewResume = async (req, res) => {
 
 export const myApplications = async (req, res) => {
   try {
+    console.log("USER FROM TOKEN:", req.user);
+console.log("USER ID:", req.user?._id);
+console.log("USER ROLE:", req.user?.role);
+
     if (req.user.role !== "student") {
       return res.status(403).json({
         message: "Only students can access this resource",
       });
     }
-
+    console.log(req.user)
     const applications = await Application.find({
       student: req.user._id,
       status: { $ne: "withdrawn" },

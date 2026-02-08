@@ -81,9 +81,8 @@ const Navbar = () => {
               </Link>
             ) : (
               <>
-                <UserButton />
+                <UserButton setIsOpen={setIsOpen}/>
 
-                {/* ✅ Messages icon ONLY (after UserButton) */}
               </>
             )}
           </div>
@@ -165,7 +164,7 @@ const Navbar = () => {
             )}
 
             {isAuthenticated ? (
-              <UserButton />
+              <UserButton setIsOpen={setIsOpen}/>
             ) : (
               <Link
                 to="/signup"

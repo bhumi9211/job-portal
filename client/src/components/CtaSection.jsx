@@ -31,7 +31,7 @@ const CTASection = () => {
 
          {!isAuthenticated ? (
            <Link
-           to="/register"
+           to="/signUp"
            className="rounded-xl border border-[#ED985F] px-8 py-3 text-lg font-semibold text-[#ED985F] transition hover:bg-[#ED985F] hover:text-[#001F3D]"
          >
            Create Account

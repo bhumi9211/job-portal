@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { API } from "../services/authApi";
 import toast from "react-hot-toast";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const Profile = () => {
   const { user } = useAuth();
-  const { updateUser } = useAuth();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [profileImage, setProfileImage] = useState("");
 
@@ -23,38 +24,41 @@ const Profile = () => {
   /* ================= FETCH PROFILE ================= */
   const fetchProfile = async () => {
     try {
-      setLoading(true);
-      const res = await API.get("/api/user/profile", {
-        withCredentials: true,
-      });
-
+      setProfileLoading(true);
+      const res = await API.get("/api/user/profile", { withCredentials: true });
       const data = res.data;
-      updateUser({
-        profileImage: data.profileImage,
-      });
-      setProfileImage(data.profileImage || "");
-
+      
+      // 🔥 SAFE DEFAULTS
       setFormData({
         fullName: data.fullName || "",
         headline: data.headline || "",
         location: data.location || "India",
         gender: data.gender || "",
         skills: data.skills?.join(", ") || "",
-        education:
-          data.education?.length > 0
-            ? data.education
-            : [{ college: "", degree: "", fieldOfStudy: "" }],
-        experience:
-          data.experience?.length > 0
-            ? data.experience
-            : [{ title: "", company: "", description: "", years: "" }],
+        education: data.education?.length > 0 
+          ? data.education.map(edu => ({
+              college: edu.college || "",
+              degree: edu.degree || "",
+              fieldOfStudy: edu.fieldOfStudy || ""
+            }))
+          : [{ college: "", degree: "", fieldOfStudy: "" }],
+        experience: data.experience?.length > 0
+          ? data.experience.map(exp => ({
+              title: exp.title || "",
+              company: exp.company || "",
+              description: exp.description || "",
+              years: exp.years || ""
+            }))
+          : [{ title: "", company: "", description: "", years: "" }],
       });
     } catch (err) {
       toast.error("Failed to load profile");
     } finally {
-      setLoading(false);
+      setProfileLoading(false);
     }
+    
   };
+  
 
   useEffect(() => {
     fetchProfile();
@@ -85,41 +89,63 @@ const Profile = () => {
 
   /* ================= SUBMIT ================= */
   const handleSubmit = async () => {
+    setLoading(true);
     try {
+      
       const fd = new FormData();
-
+  
+      // 🔥 SAFE FILTER FUNCTIONS
+      const filterEmptyEducation = (education) =>
+        education.filter((edu) =>
+          [edu?.college, edu?.degree, edu?.fieldOfStudy]
+            .filter(Boolean)
+            .some((field) => field?.toString().trim())
+        );
+  
+      const filterEmptyExperience = (experience) =>
+        experience.filter((exp) =>
+          [exp?.title, exp?.company, exp?.years, exp?.description]
+            .filter(Boolean)
+            .some((field) => field?.toString().trim())
+        );
+  
       fd.append("fullName", formData.fullName);
       fd.append("headline", formData.headline);
       fd.append("location", formData.location);
       fd.append("gender", formData.gender);
-      fd.append(
-        "skills",
-        JSON.stringify(
-          formData.skills
-            .split(",")
-            .map((s) => s.trim())
-            .filter(Boolean)
-        )
-      );
-      fd.append("education", JSON.stringify(formData.education));
-      fd.append("experience", JSON.stringify(formData.experience));
-
+      
+      // 🔥 SAFE SKILLS
+      const skillsArray = (formData.skills || "")
+        .split(",")
+        .map((s) => s?.trim())
+        .filter(Boolean);
+      fd.append("skills", JSON.stringify(skillsArray));
+  
+      // 🔥 SAFE ARRAYS
+      const validEducation = filterEmptyEducation(formData.education || []);
+      const validExperience = filterEmptyExperience(formData.experience || []);
+      
+      fd.append("education", JSON.stringify(validEducation));
+      fd.append("experience", JSON.stringify(validExperience));
+  
       if (imageFile) fd.append("profileImage", imageFile);
-
+  
       await API.put("/api/user/update-profile", fd, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
-
+  
       toast.success("Profile updated successfully ✅");
-
       fetchProfile();
     } catch (err) {
       toast.error(err.response?.data?.message || "Update failed");
+    } finally {
+      setLoading(false);
     }
   };
+  
 
-  if (loading) {
+  if (profileLoading) {
     return <p className="text-white text-center mt-20">Loading...</p>;
   }
 
@@ -166,6 +192,7 @@ const Profile = () => {
             />
             <Input value={user.email} disabled />
             <Input
+            placeholder = "Add headline"
               name="headline"
               value={formData.headline}
               onChange={handleChange}
@@ -193,6 +220,7 @@ const Profile = () => {
         {/* SKILLS */}
         <Card title="Skills">
           <Input
+          
             name="skills"
             value={formData.skills}
             onChange={handleChange}
@@ -205,16 +233,19 @@ const Profile = () => {
           {formData.education.map((edu, i) => (
             <div key={i} className="grid gap-3 md:grid-cols-3 mb-3">
               <Input
+              
                 value={edu.college}
                 onChange={(e) => updateEducation(i, "college", e.target.value)}
                 placeholder="College"
               />
               <Input
+              
                 value={edu.degree}
                 onChange={(e) => updateEducation(i, "degree", e.target.value)}
                 placeholder="Degree"
               />
               <Input
+             
                 value={edu.fieldOfStudy}
                 onChange={(e) =>
                   updateEducation(i, "fieldOfStudy", e.target.value)
@@ -242,22 +273,26 @@ const Profile = () => {
           {formData.experience.map((exp, i) => (
             <div key={i} className="grid gap-3 md:grid-cols-2 mb-3">
               <Input
+              
                 value={exp.title}
                 onChange={(e) => updateExperience(i, "title", e.target.value)}
                 placeholder="Title"
               />
               <Input
+                
                 value={exp.company}
                 onChange={(e) => updateExperience(i, "company", e.target.value)}
                 placeholder="Company"
               />
               <Input
+              
                 type="number"
                 value={exp.years}
                 onChange={(e) => updateExperience(i, "years", e.target.value)}
                 placeholder="Years"
               />
               <Input
+              
                 value={exp.description}
                 onChange={(e) =>
                   updateExperience(i, "description", e.target.value)
@@ -282,20 +317,29 @@ const Profile = () => {
 
         {/* SAVE */}
         <div className="mt-10 flex justify-end">
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className={`rounded-xl px-12 py-3 font-semibold text-[#001F3D] transition
+  <button
+    onClick={handleSubmit}
+    disabled={loading}
+    className={`rounded-xl px-12 py-3 font-semibold text-[#001F3D] transition
+      flex items-center justify-center gap-2
       ${
         loading
           ? "bg-[#ED985F]/60 cursor-not-allowed"
           : "bg-[#ED985F] hover:scale-105"
       }
     `}
-          >
-            {loading ? "Saving..." : "Save Changes"}
-          </button>
-        </div>
+  >
+    {loading ? (
+      <>
+        <AiOutlineLoading3Quarters className="animate-spin text-lg" />
+        Saving...
+      </>
+    ) : (
+      "Save Changes"
+    )}
+  </button>
+</div>
+
       </div>
     </section>
   );

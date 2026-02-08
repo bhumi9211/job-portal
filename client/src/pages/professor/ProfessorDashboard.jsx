@@ -50,15 +50,17 @@ const ProfessorDashboard = () => {
         </div>
 
         {/* LINKS */}
-        <Link to="/professor/create-post" className="sidebar-card">
+        <Link to="/professor/create-post"
+          onClick={()=>setOpen(false)}
+         className="sidebar-card">
           ➕ Create Job Post
         </Link>
 
-        <Link to="/professor/my-posts" className="sidebar-card">
+        <Link to="/professor/my-posts" onClick={()=>setOpen(false)} className="sidebar-card">
           📄 My Posts
         </Link>
 
-        <Link to="/professor/analysis" className="sidebar-card">
+        <Link to="/professor/analysis" onClick={()=>setOpen(false)} className="sidebar-card">
         📊
         Analysis
         </Link>

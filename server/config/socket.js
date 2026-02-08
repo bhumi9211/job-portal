@@ -12,7 +12,6 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-console.log(process.env.FRONTEND_URL)
 
 io.on("connection", (socket) => {
 
