@@ -23,7 +23,7 @@ export const register = async (req, res) => {
       role,
     });
     if (newUser) {
-      const token = await generateToken(newUser._id, res);
+      const token = await generateToken(newUser._id);
       return res
         .status(201)
         .json({ message: "New user created successfully", newUser, token });
@@ -53,7 +53,7 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = await generateToken(user._id, res);
+    const token = await generateToken(user._id);
 
     return res.status(200).json({
       message: "User logged in successfully",
@@ -73,10 +73,19 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    res.clearCookie("jwt");
+    // res.clearCookie("jwt"); // No longer using cookies
     return res.status(200).json({ message: "User logged Out successfully" });
   } catch (error) {
-    return res.status(200).json({ message: "User is not logged Out" });
+    return res.status(500).json({ message: "Server error during logout" });
+  }
+};
+
+export const getMe = async (req, res) => {
+  try {
+    res.status(200).json(req.user);
+  } catch (error) {
+    console.error("Error in getMe:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 

@@ -5,9 +5,14 @@ export const protectRoute = async(req,res,next) =>{
    try {
     console.log('--- New request to protected route ---');
     console.log('Request Headers:', req.headers);
-    const token = req.cookies.jwt
-    console.log("Cookies (parsed by cookieParser):", req.cookies);
-    console.log("JWT from cookie:", req.cookies?.jwt);
+
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: "Unauthorized: No token provided" });
+    }
+
+    const token = authHeader.split(' ')[1];
+    console.log("JWT from Authorization header:", token);
 
     if(!token){
         return res.status(401).json({message: "Unauthorized user.."})
@@ -23,7 +28,7 @@ export const protectRoute = async(req,res,next) =>{
     req.user = user
     next()
    } catch (error) {
-        console.log(error)
+        console.log("Error in protectRoute middleware:", error.message)
         return res.status(500).json({message: "Something went wrong."})
    }
 }

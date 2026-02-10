@@ -6,8 +6,7 @@ import { io } from "socket.io-client";
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const socket = io(BASE_URL, {
-  withCredentials: true,
-  autoConnect: false,
+  autoConnect: false, // Connect manually
 });
 
 const AuthContext = createContext(null);
@@ -17,34 +16,50 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const savedUser = localStorage.getItem("user");
-      if (savedUser) setUser(JSON.parse(savedUser));
-    } catch (e) {
-      localStorage.removeItem("user");
-    } finally {
+    const verifyUser = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          console.log("Verifying token...");
+          const res = await API.get("/api/auth/me");
+          const userData = res.data;
+          setUser(userData);
+          localStorage.setItem("user", JSON.stringify(userData));
+          console.log("User verified:", userData);
+        } catch (error) {
+          console.error("Token verification failed:", error.response?.data?.message || error.message);
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          setUser(null);
+        }
+      }
       setLoading(false);
-    }
+    };
+
+    verifyUser();
   }, []);
 
   const login = async (formData) => {
-    const res = await API.post("/api/auth/login", formData,{withCredentials: true}); // ✅ credentials auto
-    const userData = res.data.user;
+    const res = await API.post("/api/auth/login", formData);
+    const { user: userData, token } = res.data;
     localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", token);
     setUser(userData);
     toast.success("Welcome back 👋");
   };
 
   const signup = async (formData) => {
-    const res = await API.post("/api/auth/register", formData,{withCredentials: true});
-    const userData = res.data.user;
+    const res = await API.post("/api/auth/register", formData);
+    const { newUser: userData, token } = res.data;
     localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", token);
     setUser(userData);
     toast.success("Account created successfully 🎉");
   };
 
   const updateUser = (updatedFields) => {
     setUser((prev) => {
+      if (!prev) return null;
       const updatedUser = { ...prev, ...updatedFields };
       localStorage.setItem("user", JSON.stringify(updatedUser));
       return updatedUser;
@@ -52,12 +67,20 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (!user) return;
+    const token = localStorage.getItem("token");
+    if (!user || !token) return;
 
+    // Pass token for authentication
+    socket.auth = { token };
     socket.connect();
-    socket.on("connect", () => socket.emit("join", user.id));
+    
+    socket.on("connect", () => {
+      console.log("Socket connected with ID:", socket.id);
+      socket.emit("join", user.id)
+    });
 
     return () => {
+      console.log("Socket disconnecting...");
       socket.off("connect");
       socket.disconnect();
     };
@@ -65,11 +88,18 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await API.post("/api/auth/logout"); // ✅ fixed
-    } catch (err) {}
+      await API.post("/api/auth/logout");
+    } catch (err) {
+      console.error("Logout API call failed", err);
+    }
     finally {
       localStorage.removeItem("user");
+      localStorage.removeItem("token");
       setUser(null);
+      // Disconnect socket on logout
+      if (socket.connected) {
+        socket.disconnect();
+      }
       toast.success("Logged out successfully 👋");
     }
   };

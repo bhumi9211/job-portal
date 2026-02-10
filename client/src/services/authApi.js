@@ -2,12 +2,17 @@ import axios from "axios";
 
  export const API = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
-  withCredentials: true
+  // withCredentials: true // No longer needed for localStorage auth
 });
 
 // For Frontend Debugging: Axios Interceptors
 API.interceptors.request.use(
   (request) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      request.headers["Authorization"] = `Bearer ${token}`;
+    }
+
     console.log("Starting Request:", {
       method: request.method,
       url: request.url,
