@@ -15,7 +15,6 @@ import { app, server } from "./config/socket.js";
 
 // Request Logger Middleware
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} ${req.cookies}` );
 
   next();
 });

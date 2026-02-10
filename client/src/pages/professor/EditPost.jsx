@@ -48,7 +48,6 @@ const EditPost = () => {
           status: postData.status ?? "open",
         });
       } catch (err) {
-        console.error(err);
         toast.error("Failed to load post");
       } finally {
         setLoading(false);

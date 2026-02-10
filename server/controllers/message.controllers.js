@@ -24,7 +24,6 @@ export const getChatPartners = async (req, res) => {
     );
     res.status(200).json(chatPartners);
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -59,7 +58,6 @@ export const getAllChatPartners = async (req, res) => {
 
     return res.status(400).json({ message: "Invalid role" });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -76,7 +74,6 @@ export const getMessages = async (req, res) => {
     });
     res.status(200).json(messages);
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -89,8 +86,7 @@ export const sendMessage = async (req, res) => {
 
     // 👇 image comes from multer, NOT body
     const imageFile = req.file;
-    console.log("BODY:", req.body);
-console.log("FILE:", req.file);
+
 
 
     if (!text && !imageFile) {
@@ -122,7 +118,6 @@ console.log("FILE:", req.file);
     
     return res.status(200).json(newMessage);
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -29,7 +29,6 @@ export const hasAlreadyApplied = async (req, res) => {
         applied: Boolean(application),
       });
     } catch (error) {
-      console.error(error);
       res.status(500).json({ message: "Internal server error" });
     }
   };
@@ -67,7 +66,6 @@ export const viewResume = async (req, res) => {
   
       return res.json({ resume: application.resume });
     } catch (err) {
-      console.error(err);
       res.status(500).json({ message: "Internal server error" });
     }
   };
@@ -75,16 +73,13 @@ export const viewResume = async (req, res) => {
 
 export const myApplications = async (req, res) => {
   try {
-    console.log("USER FROM TOKEN:", req.user);
-console.log("USER ID:", req.user?._id);
-console.log("USER ROLE:", req.user?.role);
+
 
     if (req.user.role !== "student") {
       return res.status(403).json({
         message: "Only students can access this resource",
       });
     }
-    console.log(req.user)
     const applications = await Application.find({
       student: req.user._id,
       status: { $ne: "withdrawn" },
@@ -101,7 +96,6 @@ console.log("USER ROLE:", req.user?.role);
 
     res.status(200).json(applications);
   } catch (error) {
-    console.error(error);
     res.status(500).json({
       message: "Internal server error",
     });
@@ -157,7 +151,6 @@ export const acceptApplication = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -202,7 +195,6 @@ export const rejectApplication = async(req,res) =>{
       res.status(200).json({message: "Application rejected.."},application)
 
     } catch (error) {
-      console.error(error);
       res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -241,7 +233,6 @@ export const waitlist = async(req,res) => {
       res.status(200).json({message: "Status updated.."},application)
 
     } catch (error) {
-      console.error(error);
       res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -263,7 +254,6 @@ export const getWaitlistedCandidatesByPost = async (req, res) => {
 
     res.status(200).json(waitlistedApplications);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

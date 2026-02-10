@@ -75,7 +75,6 @@ const ViewPost = () => {
       );
       setApplied(res.data.applied);
     } catch (err) {
-      console.error(err);
     }
   };
   
@@ -104,7 +103,6 @@ const ViewPost = () => {
       setPost(null);
       navigate(-1);
     } catch (error) {
-      console.error(error);
       toast.error(
         error.response?.data?.message || "Failed to delete post"
       );

@@ -53,7 +53,6 @@ export const createPost = async (req, res) => {
   
       res.status(201).json(post);
     } catch (error) {
-      console.error(error);
       res.status(500).json({ message: "Internal server error" });
     }
   };
@@ -78,7 +77,6 @@ export const getAllPosts = async(req,res) =>{
 
     res.status(200).json(updatedPosts);
     } catch (error) {
-        console.error(error);
         res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -100,7 +98,6 @@ export const getPostById = async(req,res) =>{
 
     res.status(200).json(post);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 }
@@ -196,7 +193,6 @@ export const editPost = async (req, res) => {
 
     res.status(200).json(updatedPost);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -233,7 +229,6 @@ export const deletePost = async(req,res) => {
         res.status(200).json({message: "Post deleted successfully."})
 
     }catch(error){
-        console.error(error);
         res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -255,7 +250,6 @@ export const getMyPosts = async(req,res) =>{
       res.status(200).json(posts)
 
     } catch (error) {
-      console.error(error);
       res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -289,7 +283,6 @@ export const getApplicantsByPostId = async (req, res) => {
     res.status(200).json(applicants);
 
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -362,7 +355,6 @@ if (!resumeUrl) {
       newApplication
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 }

@@ -20,14 +20,11 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem("token");
       if (token) {
         try {
-          console.log("Verifying token...");
           const res = await API.get("/api/auth/me");
           const userData = res.data;
           setUser(userData);
           localStorage.setItem("user", JSON.stringify(userData));
-          console.log("User verified:", userData);
         } catch (error) {
-          console.error("Token verification failed:", error.response?.data?.message || error.message);
           localStorage.removeItem("user");
           localStorage.removeItem("token");
           setUser(null);
@@ -75,12 +72,10 @@ export const AuthProvider = ({ children }) => {
     socket.connect();
     
     socket.on("connect", () => {
-      console.log("Socket connected with ID:", socket.id);
       socket.emit("join", user.id)
     });
 
     return () => {
-      console.log("Socket disconnecting...");
       socket.off("connect");
       socket.disconnect();
     };
@@ -90,7 +85,6 @@ export const AuthProvider = ({ children }) => {
     try {
       await API.post("/api/auth/logout");
     } catch (err) {
-      console.error("Logout API call failed", err);
     }
     finally {
       localStorage.removeItem("user");

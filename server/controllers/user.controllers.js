@@ -45,7 +45,6 @@ export const updateProfile = async (req, res) => {
     }).select("-password");
     res.status(200).json(user);
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -62,7 +61,6 @@ export const getUserProfile = async(req,res) =>{
       }      
     res.status(200).json(profile)
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 }
@@ -85,7 +83,6 @@ export const getUserProfileById = async (req, res) => {
     res.status(200).json(user);
 
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -96,7 +93,6 @@ export const deleteAccount = async(req,res) => {
     await User.findByIdAndDelete(userId)
     res.status(200).json({message: "User deleted successfully"})
     } catch (error) {
-      console.error(error);
       res.status(500).json({ message: "Internal server error" });
     }
 }

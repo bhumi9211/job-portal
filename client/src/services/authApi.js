@@ -13,33 +13,21 @@ API.interceptors.request.use(
       request.headers["Authorization"] = `Bearer ${token}`;
     }
 
-    console.log("Starting Request:", {
-      method: request.method,
-      url: request.url,
-      headers: request.headers,
-    });
+   
     return request;
   },
   (error) => {
-    console.error("Request Error:", error);
     return Promise.reject(error);
   }
 );
 
 API.interceptors.response.use(
   (response) => {
-    console.log("Response Received:", {
-      status: response.status,
-      data: response.data,
-    });
+  
     return response;
   },
   (error) => {
-    console.error("Response Error:", {
-      message: error.message,
-      status: error.response?.status,
-      data: error.response?.data,
-    });
+ 
     return Promise.reject(error);
   }
 );

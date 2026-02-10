@@ -3,8 +3,7 @@ import jwt from "jsonwebtoken"
 
 export const protectRoute = async(req,res,next) =>{
    try {
-    console.log('--- New request to protected route ---');
-    console.log('Request Headers:', req.headers);
+ 
 
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -12,7 +11,6 @@ export const protectRoute = async(req,res,next) =>{
     }
 
     const token = authHeader.split(' ')[1];
-    console.log("JWT from Authorization header:", token);
 
     if(!token){
         return res.status(401).json({message: "Unauthorized user.."})
@@ -28,7 +26,6 @@ export const protectRoute = async(req,res,next) =>{
     req.user = user
     next()
    } catch (error) {
-        console.log("Error in protectRoute middleware:", error.message)
         return res.status(500).json({message: "Something went wrong."})
    }
 }
