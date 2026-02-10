@@ -13,7 +13,15 @@ import applicationRoute from "./routes/application.routes.js";
 import analysisRoute from "./routes/analysis.routes.js";
 import { app, server } from "./config/socket.js";
 
+// Request Logger Middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} ${req.cookies}` );
+
+  next();
+});
+
 app.use(express.json({ limit: '10mb' }));
+app.set('trust proxy', 1); // Trust proxy headers from Render
 app.use(cookieParser());
 app.use(
   cors({
