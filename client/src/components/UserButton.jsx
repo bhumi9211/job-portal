@@ -5,13 +5,14 @@ import { useAuth } from "../context/AuthContext";
 const UserButton = ({setIsOpen}) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [open,setOpen] = useState(false)
 
   if (!user) return null;
 
   return (
     <div className="relative">
       {/* ================= DESKTOP VIEW ================= */}
-      <div className="hidden md:block">
+      <div className="hidden md:block" onClick={() => setOpen(prev => !prev)}>
         <button
           className="flex items-center gap-2 rounded-full bg-[#213448] px-4 py-2 text-white hover:bg-[#2f4a63]"
         >
@@ -36,29 +37,32 @@ const UserButton = ({setIsOpen}) => {
         </button>
 
         {/* Dropdown */}
-      
-          <div className="absolute right-0 mt-2 w-48 rounded-xl bg-[#213448] shadow-lg border border-[#547792]">
-            <button
-              onClick={() => {
-                navigate("/profile");
-                
-              }}
-              className="w-full px-4 py-2 text-left text-sm text-white hover:bg-[#2f4a63] rounded-t-xl"
-            >
-              Profile
-            </button>
+          
+         {open && (
+           <div className="absolute right-0 mt-2 w-48 rounded-xl bg-[#213448] shadow-lg border border-[#547792]">
+           <button
+             onClick={() => {
+               navigate("/profile");
+               if(setIsOpen) setIsOpen(false)
+               
+             }}
+             className="w-full px-4 py-2 text-left text-sm text-white hover:bg-[#2f4a63] rounded-t-xl"
+           >
+             Profile
+           </button>
 
-            <button
-              onClick={() => {
-                logout();
-                
-                navigate("/signup");
-              }}
-              className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-[#2f4a63] rounded-b-xl"
-            >
-              Logout
-            </button>
-          </div>
+           <button
+             onClick={() => {
+               logout();
+               
+               navigate("/signup");
+             }}
+             className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-[#2f4a63] rounded-b-xl"
+           >
+             Logout
+           </button>
+         </div>
+         )}
       
       </div>
 
