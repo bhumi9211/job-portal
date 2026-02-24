@@ -14,10 +14,13 @@ export const PostsProvider = ({ children }) => {
     try {
       setLoading(true);
 
-      const res = await API.get("/api/post/all-posts", {
-        withCredentials: true,
-      });
+      const res = await API.get("/api/post/all-posts",
+        // {
+      //   withCredentials: true,
+      // }
+      );
     setPosts(res.data)
+    console.log(res.data)
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Posts are not available"
@@ -32,7 +35,9 @@ export const PostsProvider = ({ children }) => {
     try {
       setLoading(true);
 
-      const res = await API.get(`/api/post/${postId}`,{withCredentials: true})
+      const res = await API.get(`/api/post/${postId}`,
+        // {withCredentials: true}
+      )
       setPost(res.data)
     } catch (err) {
       toast.error(
