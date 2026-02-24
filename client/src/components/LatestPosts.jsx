@@ -4,7 +4,6 @@ import { usePosts } from "../context/PostsContext";
 
 const LatestPosts = () => {
   const { posts } = usePosts();
-  console.log(posts)
   const latestPosts = posts.slice(0, 3);
 
   return (

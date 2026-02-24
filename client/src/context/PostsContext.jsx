@@ -20,7 +20,6 @@ export const PostsProvider = ({ children }) => {
       // }
       );
     setPosts(res.data)
-    console.log(res.data)
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Posts are not available"
