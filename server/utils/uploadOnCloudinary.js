@@ -1,4 +1,4 @@
-import { cloudinary } from "../index.js";
+import { cloudinary } from "../config/cloudinary.js";
 
 const uploadOnCloudinary = async (fileBuffer, fileName) => {
   if (!fileBuffer) return null;

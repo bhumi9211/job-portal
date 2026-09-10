@@ -4,7 +4,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
-import {v2 as cloudinary } from "cloudinary";
+import "./config/cloudinary.js"; // initialize cloudinary
 import authRoute from "./routes/auth.routes.js";
 import userRoute from "./routes/user.routes.js";
 import postRoute from "./routes/post.routes.js";
@@ -31,19 +31,6 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: true }));
-// app.use(cors())
-
-
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-// ✅ EXPORT CLOUDINARY OBJECT
-export { cloudinary };
-
 
 app.use("/api/auth", authRoute);
 app.use("/api/message", messageRoute);
